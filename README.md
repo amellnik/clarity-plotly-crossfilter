@@ -1,27 +1,11 @@
-# ClarityPlotlyCrossfilter
+# Clarity-Plotly Crossfiltering Demo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.1.
+## Plan of attack
 
-## Development server
+I don't think it's possible to programmatically select points in plotly (based on the discussion [here](https://community.plot.ly/t/select-items-from-javascript/4516)).  Because of this, we will need to latch into the [select event](https://plot.ly/javascript/plotlyjs-events/#select-event) and then update a field in the underlying data in response.  
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Clarity does offer a [two-way binding](https://vmware.github.io/clarity/documentation/v0.13/datagrid/selection) on the selection state of the row, so one option is to only plot items which are selected in Clarity.  We can then bind to the selection change event in Plotly, then take the set of selected points and deselect everything else by acting directly on the row, then redraw the plot.  This has the drawback of removing unselected points from the plot entirely.  
 
-## Code scaffolding
+## The dataset
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+The data used here is from the Washington Post's fatal police shooting database which is available online [here](https://github.com/washingtonpost/data-police-shootings).

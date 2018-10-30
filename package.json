@@ -20,7 +20,13 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
+    "@clr/angular": "^0.13.7",
+    "@clr/icons": "^0.13.7",
+    "@clr/ui": "^0.13.7",
+    "@webcomponents/custom-elements": "^1.0.0",
+    "angular-plotly.js": "^0.1.15",
     "core-js": "^2.5.4",
+    "plotly.js": "^1.41.3",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },
