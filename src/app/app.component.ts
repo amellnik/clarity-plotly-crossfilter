@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
 
   // States
   loading = true;
+  outliers_filter_val = 'false';
 
   ngOnInit() {
     Plotly.d3.csv('https://raw.githubusercontent.com/washingtonpost/data-police-shootings/master/fatal-police-shootings-data.csv')
@@ -134,6 +135,8 @@ export class AppComponent implements OnInit {
     this.last_selection_data.points.forEach(x => {
       this.data[x.customdata.uid].flagged = true;
     })
+    this.applyFilters();
+    this.drawPlots();
   }
 
   unflagAllPoints() {
@@ -141,6 +144,8 @@ export class AppComponent implements OnInit {
       x.flagged = false;
       return x;
     })
+    this.applyFilters();
+    this.drawPlots();
   }
 
   @Debounce(500)

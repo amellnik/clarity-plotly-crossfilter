@@ -41,7 +41,7 @@
               <clr-dg-column [clrDgField]="'flee'">Fleeing</clr-dg-column>
               <clr-dg-column [clrDgField]="'armed'">Armed</clr-dg-column>
               <clr-dg-column [clrDgField]="'threat_level'">Threat level</clr-dg-column>
-              <clr-dg-column [clrDgField]="'flagged'" [clrFilterValue]="false">
+              <clr-dg-column [clrDgField]="'flagged'" [(clrFilterValue)]="outliers_filter_val">
                 Flagged as outlier?
               </clr-dg-column>
 
