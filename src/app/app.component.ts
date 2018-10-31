@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import Debounce from 'debounce-decorator'
+
 import Plotly from 'plotly.js';
 
 @Component({
@@ -10,14 +12,23 @@ export class AppComponent implements OnInit {
 
   constructor() { }
 
+  // Data
   data = <any>[];
-  selected_data = <any>[];
+  // selected_data = <any>[];
+  filtered_data = <any>[];
+
   gender_summary = <any>[];
+
+  // Plot objects
   scatter:any = {};
   histogram:any = {};
 
+  // Required by https://github.com/amellnik/clarity-plotly-crossfilter/issues/1
+  last_selection_data:any = {};
 
+  active_filters = <any>[];
 
+  // States
   loading = true;
 
   ngOnInit() {
@@ -26,8 +37,13 @@ export class AppComponent implements OnInit {
         if (error) {
           console.log(error)
         } else {
-          this.data = rows;
+          this.data = rows.map((x,i) => {
+            x.flagged = false;
+            x.uid = i;
+            return x;
+          });
           console.log(this.data)
+          this.applyFilters();
           this.loading = false;
           this.drawPlots();
         }
@@ -39,12 +55,26 @@ export class AppComponent implements OnInit {
     this.drawHistogram();
   }
 
+  applyFilters() {
+    this.filtered_data = this.data.filter(x => {
+      for (let f of this.active_filters) {
+        if !(x[f.property].toString().toLowerCase().includes(f.value.toLowerCase())) {
+          return false;
+        }
+      }
+      return true;
+    });
+    console.log('Filtered data: ')
+    console.log(this.filtered_data);
+  }
+
   drawScatter() {
     this.scatter = {
       data: [{
         mode: 'markers',
-        x: this.data.map(x => x.date),
-        y: this.data.map(x => x.age)
+        x: this.filtered_data.map(x => x.date),
+        y: this.filtered_data.map(x => x.age),
+        customdata: this.filtered_data
       }],
       layout: {
         xaxis: {
@@ -61,7 +91,7 @@ export class AppComponent implements OnInit {
   drawHistogram() {
     this.gender_summary = Plotly.d3.nest()
       .key(x => x.gender)
-      .entries(this.data)
+      .entries(this.filtered_data)
       .filter(x => x.key != '')
       .map(o => Object.assign(o.values, {gender: o.key}))
     // console.log(this.gender_summary)
@@ -87,16 +117,44 @@ export class AppComponent implements OnInit {
     // console.log(this.histogram)
   }
 
+
   handleSelection(event: any) {
     console.log('Selection event:')
     console.log(event)
   }
 
+  @Debounce(500)
   handleSelecting(event: any) {
     console.log('Selecting event:')
     console.log(event)
+    this.last_selection_data = event;
   }
 
+  flagPoints() {
+    this.last_selection_data.points.forEach(x => {
+      this.data[x.customdata.uid].flagged = true;
+    })
+  }
 
+  unflagAllPoints() {
+    this.data = this.data.map(x => {
+      x.flagged = false;
+      return x;
+    })
+  }
+
+  @Debounce(500)
+  dgRefresh(event: any) {
+    console.log('Datagrid refresh event:')
+    console.log(event)
+
+    if (event['filters']) {
+      this.active_filters = event.filters;
+      this.applyFilters();
+      this.drawPlots();
+    } else {
+      this.active_filters = [];
+    }
+  }
 
 }

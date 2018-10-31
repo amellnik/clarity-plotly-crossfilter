@@ -26,6 +26,7 @@
     "@webcomponents/custom-elements": "^1.0.0",
     "angular-plotly.js": "^0.1.15",
     "core-js": "^2.5.4",
+    "debounce-decorator": "^1.0.6",
     "plotly.js": "^1.41.3",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"

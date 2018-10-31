@@ -13,6 +13,10 @@
             <div class="card-block">
               <plotly-plot [data]="scatter.data" [layout]="scatter.layout" [config]="{modeBarButtonsToRemove: ['sendDataToCloud']}" (selected)="handleSelection($event)" (selecting)="handleSelecting($event)"></plotly-plot>
             </div>
+            <div class="card-footer">
+                <button class="btn btn-link" (click)="flagPoints()">Flag selected points</button>
+                <button class="btn btn-link" (click)="unflagAllPoints()">Unflag all points</button>
+            </div>
           </div>
         </div>
         <div class="clr-col-6" *ngIf="histogram.data" >
@@ -26,7 +30,8 @@
 
       <div class="clr-row" *ngIf="!loading">
         <div class="clr-col-12">
-          <clr-datagrid [(clrDgSelected)]="selected_data" [clrDgRowSelection]="true">
+          <!-- <clr-datagrid [(clrDgSelected)]="selected_data" [clrDgRowSelection]="true"> -->
+          <clr-datagrid (clrDgRefresh)="dgRefresh($event)">
               <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
               <clr-dg-column [clrDgField]="'age'">Age</clr-dg-column>
               <clr-dg-column [clrDgField]="'date'">Date</clr-dg-column>
@@ -36,8 +41,12 @@
               <clr-dg-column [clrDgField]="'flee'">Fleeing</clr-dg-column>
               <clr-dg-column [clrDgField]="'armed'">Armed</clr-dg-column>
               <clr-dg-column [clrDgField]="'threat_level'">Threat level</clr-dg-column>
+              <clr-dg-column [clrDgField]="'flagged'" [clrFilterValue]="false">
+                Flagged as outlier?
+              </clr-dg-column>
 
-              <clr-dg-row *clrDgItems="let p of data" [clrDgItem]="p" [(clrDgSelected)]="p.selected">
+              <!-- <clr-dg-row *clrDgItems="let p of data" [clrDgItem]="p" [(clrDgSelected)]="p.selected"> -->
+              <clr-dg-row *clrDgItems="let p of data" [clrDgItem]="p">
                 <clr-dg-cell>{{p.name}}</clr-dg-cell>
                 <clr-dg-cell>{{p.age}}</clr-dg-cell>
                 <clr-dg-cell>{{p.date}}</clr-dg-cell>
@@ -47,6 +56,7 @@
                 <clr-dg-cell>{{p.flee}}</clr-dg-cell>
                 <clr-dg-cell>{{p.armed}}</clr-dg-cell>
                 <clr-dg-cell>{{p.threat_level}}</clr-dg-cell>
+                <clr-dg-cell>{{p.flagged}}</clr-dg-cell>
               </clr-dg-row>
               <clr-dg-footer>
                 <clr-dg-pagination #pagination [clrDgPageSize]="10">
