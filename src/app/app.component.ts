@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
   applyFilters() {
     this.filtered_data = this.data.filter(x => {
       for (let f of this.active_filters) {
-        if !(x[f.property].toString().toLowerCase().includes(f.value.toLowerCase())) {
+        if (!(x[f.property].toString().toLowerCase().includes(f.value.toLowerCase()))) {
           return false;
         }
       }
